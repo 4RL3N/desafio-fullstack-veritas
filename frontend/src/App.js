@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getTasks, createTask, updateTask, deleteTask } from "./api";
 import TaskCard from "./components/taskcard";
 import TaskForm from "./components/taskform";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const STATUSES = [
   { key: "todo", label: "A Fazer" },
@@ -85,6 +86,37 @@ function App() {
     }
   };
 
+  const handleDragEnd = async (result) => {
+  const { destination, source, draggableId } = result;
+
+  if (!destination) return; // Soltou fora de qualquer coluna
+  if (
+    destination.droppableId === source.droppableId &&
+    destination.index === source.index
+  )
+    return; // Não mudou de lugar
+
+  const task = tasks.find((t) => t.id === draggableId);
+  if (!task) return;
+
+  const newStatus = destination.droppableId;
+
+  // Atualiza visualmente
+  const updated = { ...task, status: newStatus };
+  setTasks((prev) =>
+    prev.map((t) => (t.id === task.id ? updated : t))
+  );
+
+  // Atualiza no backend
+  try {
+    await updateTask(task.id, { status: newStatus });
+  } catch (err) {
+    setError(err.message || "Erro ao mover tarefa");
+    // Se der erro, reverte visualmente
+    load();
+  }
+  };
+
   return (
     <div className="app">
       <header>
@@ -98,24 +130,56 @@ function App() {
       {loading && <div className="info">Carregando...</div>}
       {error && <div className="error">Erro: {error}</div>}
 
-      <main>
-        {STATUSES.map((col) => (
-          <section key={col.key} className="column">
-            <h2>{col.label}</h2>
-            <div className="column-body">
-              {tasks.filter(t => t.status === col.key).map(task => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  onEdit={() => { setEditing(task); setShowForm(true); }}
-                  onDelete={() => handleDelete(task.id)}
-                  onMove={(to) => moveTask(task, to)}
-                />
-              ))}
-            </div>
-          </section>
-        ))}
-      </main>
+      <DragDropContext onDragEnd={handleDragEnd}>
+          <main>
+            {STATUSES.map((col) => (
+              <Droppable droppableId={col.key} key={col.key}>
+                {(provided, snapshot) => (
+                  <section
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    className={`column ${
+                      snapshot.isDraggingOver ? "column--dragging" : ""
+                    }`}
+                  >
+                    <h2>{col.label}</h2>
+                    <div className="column-body">
+                      {tasks
+                        .filter((t) => t.status === col.key)
+                        .map((task, index) => (
+                          <Draggable
+                            key={task.id}
+                            draggableId={task.id}
+                            index={index}
+                          >
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <TaskCard
+                                  task={task}
+                                  onEdit={() => {
+                                    setEditing(task);
+                                    setShowForm(true);
+                                  }}
+                                  onDelete={() => handleDelete(task.id)}
+                                  onMove={(to) => moveTask(task, to)}
+                                />
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                      {provided.placeholder}
+                    </div>
+                  </section>
+                )}
+              </Droppable>
+            ))}
+          </main>
+        </DragDropContext>
+
 
       {showForm && (
         <TaskForm

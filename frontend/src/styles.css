@@ -55,6 +55,12 @@ main {
   min-height: 300px;
 }
 
+.column--dragging {
+  background: rgba(46, 110, 247, 0.1);
+  transition: background 0.2s ease;
+}
+
+
 .column h2 { margin-top: 0; }
 
 .task-card {
