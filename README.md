@@ -137,6 +137,13 @@ Response:
 ```
 ---
 
+## 🚧 Limitações Conhecidas
+
+ - O projeto não possui autenticação de usuários.
+ - A persistência é feita apenas em arquivo JSON local (não há banco de dados).
+ - O CORS está liberado para todas as origens (apenas para ambiente de desenvolvimento).
+ - Em caso de recarga simultânea do backend e frontend, pode ocorrer leve atraso na sincronização inicial das tarefas.
+
 ## 🔮 Melhorias Futuras
 
  - Adicionar autenticação JWT
