@@ -156,7 +156,7 @@ Response:
 
 ## 🤝 Autor
 
-Arlen Filho
-Desenvolvedor Frontend / Fullstack
-💼 Projeto desenvolvido para avaliação técnica — Desafio Veritas
-📧 Contato: arlen0filho04@gmail.com
+ - Arlen Filho
+ - Desenvolvedor Frontend / Fullstack
+ - 💼 Projeto desenvolvido para avaliação técnica — Desafio Veritas
+ - 📧 Contato: arlen0filho04@gmail.com
