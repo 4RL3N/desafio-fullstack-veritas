@@ -48,7 +48,6 @@ Certifique-se de ter instalados:
 Abra o terminal na pasta `backend` e inicialize o módulo (apenas na primeira vez):
 
 ```
-cd backend
 go mod init desafio-kanban-backend
 ```
 

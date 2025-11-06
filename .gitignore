@@ -45,6 +45,7 @@ backend/*.test
 backend/go.sum
 backend/go.work
 backend/go.work.sum
+backend/go.mod
 
 # =========================
 # SISTEMA / OS
