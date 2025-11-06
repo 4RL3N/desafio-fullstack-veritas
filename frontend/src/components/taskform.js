@@ -9,13 +9,22 @@ export default function TaskForm({ task, onClose, onSubmit }) {
   useEffect(() => { setError(null); }, [title, description]);
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!title.trim()) {
-      setError("Título é obrigatório.");
-      return;
-    }
-    onSubmit({ title: title.trim(), description: description.trim(), status });
-  };
+  e.preventDefault();
+
+  const safeTitle = (title || "").trim();
+  const safeDescription = (description || "").trim();
+
+  if (!safeTitle) {
+    setError("Título é obrigatório.");
+    return;
+  }
+
+  onSubmit({
+    title: safeTitle,
+    description: safeDescription,
+    status,
+  });
+};
 
   return (
     <div className="modal">
